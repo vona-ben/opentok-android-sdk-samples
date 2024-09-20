@@ -1,6 +1,7 @@
 package com.tokbox.sample.advancedaudiodriver;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHeadset;
@@ -41,7 +42,7 @@ class AdvancedAudioDevice extends BaseAudioDevice {
     private static final int SAMPLE_SIZE_IN_BYTES = 2;
     private static final int DEFAULT_SAMPLES_PER_BUFFER = (DEFAULT_SAMPLE_RATE / 1000) * 10; // 10ms
     private static final int DEFAULT_BUFFER_SIZE =
-        SAMPLE_SIZE_IN_BYTES * DEFAULT_SAMPLES_PER_BUFFER * STEREO_CHANNELS;
+            SAMPLE_SIZE_IN_BYTES * DEFAULT_SAMPLES_PER_BUFFER * STEREO_CHANNELS;
     // Max 10 ms @ 48 kHz - Stereo
     private static final int DEFAULT_START_RENDERER_AND_CAPTURER_DELAY = 5 * 1000;
     private static final int DEFAULT_BLUETOOTH_SCO_START_DELAY = 2000;
@@ -374,7 +375,7 @@ class AdvancedAudioDevice extends BaseAudioDevice {
                             break;
                         case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                             audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
-                                audioState.getLastStreamVolume(), 0);
+                                    audioState.getLastStreamVolume(), 0);
                             break;
                         default:
                             Log.d(TAG, "focusChange = " + focusChange);
@@ -446,8 +447,8 @@ class AdvancedAudioDevice extends BaseAudioDevice {
                 samplesPerBuffer = Integer.parseInt(
                         audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER));
                 outputBufferSize = SAMPLE_SIZE_IN_BYTES
-                    * samplesPerBuffer
-                    * NUM_CHANNELS_RENDERING;
+                        * samplesPerBuffer
+                        * NUM_CHANNELS_RENDERING;
             } catch(NumberFormatException numberFormatException) {
                 Log.e(TAG, "DefaultAudioDevice(): " + numberFormatException.getMessage());
             } finally {
@@ -483,13 +484,14 @@ class AdvancedAudioDevice extends BaseAudioDevice {
 
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public boolean initCapturer() {
         // get the minimum buffer size that can be used
         int minRecBufSize = AudioRecord.getMinBufferSize(
-            captureSettings.getSampleRate(),
-            NUM_CHANNELS_CAPTURING == 1 ? AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO,
-            AudioFormat.ENCODING_PCM_16BIT
+                captureSettings.getSampleRate(),
+                NUM_CHANNELS_CAPTURING == 1 ? AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO,
+                AudioFormat.ENCODING_PCM_16BIT
         );
 
         // double size to be more safe
@@ -681,10 +683,10 @@ class AdvancedAudioDevice extends BaseAudioDevice {
 
         // Request audio focus for playback
         int result = audioManager.requestAudioFocus(audioFocusChangeListener,
-            // Use the music stream.
-            AudioManager.STREAM_VOICE_CALL,
-            // Request permanent focus.
-            AudioManager.AUDIOFOCUS_GAIN);
+                // Use the music stream.
+                AudioManager.STREAM_VOICE_CALL,
+                // Request permanent focus.
+                AudioManager.AUDIOFOCUS_GAIN);
 
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             Log.d("AUDIO_FOCUS", "Audio Focus request GRANTED !");
@@ -699,9 +701,9 @@ class AdvancedAudioDevice extends BaseAudioDevice {
         enableBluetoothEvents();
         // get the minimum buffer size that can be used
         int minPlayBufSize = AudioTrack.getMinBufferSize(
-            rendererSettings.getSampleRate(),
-            NUM_CHANNELS_RENDERING == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO,
-            AudioFormat.ENCODING_PCM_16BIT
+                rendererSettings.getSampleRate(),
+                NUM_CHANNELS_RENDERING == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO,
+                AudioFormat.ENCODING_PCM_16BIT
         );
 
         // release the object
